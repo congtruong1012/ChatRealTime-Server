@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const userRoute = require("./routes/user.route");
 const messageRoute = require("./routes/message.route");
+const channelRoute = require("./routes/channel.route");
 
 const connectDb = async () => {
   try {
@@ -43,6 +44,7 @@ io.on("connection", (socket) => {
 
 app.use("/api", userRoute);
 app.use("/api/message", messageRoute);
+app.use("/api/channel", channelRoute);
 
 httpServer.listen(4000, () => {
   console.log("Listening on port 4000");

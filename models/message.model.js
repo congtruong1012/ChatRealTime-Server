@@ -13,9 +13,9 @@ const messageSchema = mongoose.Schema(
       required: false,
       default: Date.now(),
     },
-    userId: {
+    channelId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Channel",
     },
   },
   { timestamps: true }
