@@ -4,6 +4,7 @@ const { Server } = require("socket.io");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const userRoute = require("./routes/user.route");
 const messageRoute = require("./routes/message.route");
 const channelRoute = require("./routes/channel.route");
@@ -31,6 +32,8 @@ const io = new Server(httpServer, {
   /* options */
   cors: true,
 });
+
+app.use(cors());
 
 app.use(bodyParser());
 

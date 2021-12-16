@@ -22,7 +22,7 @@ const userController = {
       /** Check user exist */
       const userExist = await UserModel.findOne({ username });
       if (userExist)
-        return res.status(204).json({ error: "username is exist" });
+        return res.status(204).json({ error: "Username is exist" });
 
       const users = await UserModel.find({});
       const user = new UserModel({
@@ -32,8 +32,15 @@ const userController = {
         avatar: `https://i.pravatar.cc/150?img=${users.length}`,
       });
       const payload = await user.save();
-      return res.status(200).json(payload);
+      const { _id, avatar } = payload;
+      const token = jwt.sign({ _id }, "token", { expiresIn: "12h" });
+      res.cookie("token", token, {
+        maxAge: 12 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
+      return res.status(200).json({ token, _id, username, fullname, avatar });
     } catch (error) {
+      console.log("create: ~ error", error);
       return res.status(500).json(error);
     }
   },
@@ -67,7 +74,7 @@ const userController = {
 
   logout: (req, res) => {
     res.clearCookie("token");
-    return res.status(200).json({message: 'Logout success'})
+    return res.status(200).json({ message: "Logout success" });
   },
 };
 
