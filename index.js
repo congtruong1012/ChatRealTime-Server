@@ -2,22 +2,21 @@ const express = require("express");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const mongoose = require("mongoose");
+require("dotenv").config();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const userRoute = require("./routes/user.route");
 const messageRoute = require("./routes/message.route");
 const channelRoute = require("./routes/channel.route");
+const checkToken = require("./middlewares/check-token");
 
 const connectDb = async () => {
   try {
-    await mongoose.connect(
-      "mongodb+srv://congtruong1012:01627845641@cluster0.iuy6e.mongodb.net/ChatRealTime?retryWrites=true&w=majority",
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    );
+    await mongoose.connect(process.env.DB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log("connect success !!");
   } catch (error) {
     console.log("connect fail !", error);
@@ -33,7 +32,7 @@ const io = new Server(httpServer, {
   cors: true,
 });
 
-app.use(cors());
+app.use(cors({ credentials: true, origin: true }));
 
 app.use(bodyParser());
 
@@ -46,9 +45,11 @@ io.on("connection", (socket) => {
 });
 
 app.use("/api", userRoute);
-app.use("/api/message", messageRoute);
-app.use("/api/channel", channelRoute);
+app.use("/api/message", checkToken, messageRoute);
+app.use("/api/channel", checkToken, channelRoute);
 
-httpServer.listen(4000, () => {
-  console.log("Listening on port 4000");
+const port = process.env.PORT || 4000;
+
+httpServer.listen(port, () => {
+  console.log(`Listening on port ${port}`);
 });

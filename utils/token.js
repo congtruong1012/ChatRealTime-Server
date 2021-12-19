@@ -1,9 +1,18 @@
 const jwt = require("jsonwebtoken");
 
-const createToken = (data) => {
-console.log('createToken ~ data', data)
-  const token = jwt.sign(data, "token", { expiresIn: "12h" });
-  return token;
+const objFuncToken = {
+  createToken: (payload) => {
+    const token = jwt.sign(payload, process.env.TOKEN, {
+      expiresIn: "12h",
+    });
+    return token;
+  },
+  createRefreshToken: (payload) => {
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN, {
+      expiresIn: "7d",
+    });
+    return refreshToken;
+  },
 };
 
-module.exports = createToken;
+module.exports = objFuncToken;
