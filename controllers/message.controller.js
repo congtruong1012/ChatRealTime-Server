@@ -13,6 +13,21 @@ const messageController = {
       return res.status(500).json(error);
     }
   },
+  newMessage: async (req, res) => {
+    try {
+      const { channelId } = req.query;
+      if (!channelId) return res.status(400).json({ error: "Bad Request" });
+      const data = await MessageModal.findOne(
+        { channelId },
+        {},
+        { sort: { createdAt: -1 } }
+      );
+      return res.status(200).json(data);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  },
+
   save: async (req, res) => {
     try {
       const { _id, text, from, channelId } = req.body;

@@ -4,6 +4,7 @@ const userController = require("../controllers/user.controller");
 const router = express.Router();
 
 router.get("/users", checkToken, userController.get);
+router.get("/users/detail", checkToken, userController.detail);
 router.get("/users/check-token", userController.checkToken);
 router.post("/users/token", userController.token);
 router.post("/users/create", userController.create);

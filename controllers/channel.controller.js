@@ -23,7 +23,7 @@ const channelController = {
       const channel = new ChannelModel({
         members: [senderId, receiverId],
       });
-      const payload = await channel.save()
+      const payload = await channel.save();
       return res.status(200).json(payload);
     } catch (error) {
       return res.status(500).json(error);

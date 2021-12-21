@@ -12,6 +12,17 @@ const userController = {
       return res.status(500).json(error);
     }
   },
+  detail: async (req, res) => {
+    try {
+      const { userId } = req.query;
+       if ([!userId].includes(true))
+         return res.status(400).json({ error: "Bad Request" });
+      const data = await UserModel.findOne({ _id: userId });
+      return res.status(200).json(data);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  },
   checkToken: async (req, res) => {
     try {
       const { token = "" } = req.cookies;
