@@ -20,7 +20,7 @@ const messageController = {
       const data = await MessageModal.findOne(
         { channelId },
         {},
-        { sort: { createdAt: -1 } }
+        { sort: { createdAt: -1 } },
       );
       return res.status(200).json(data);
     } catch (error) {
@@ -30,9 +30,10 @@ const messageController = {
 
   save: async (req, res) => {
     try {
-      const { _id, text, from, channelId } = req.body;
-      if ([!text, !from, !channelId].includes(true))
-        return res.status(400).json({ error: "Bad Request" });
+      const {
+        _id, text, from, channelId,
+      } = req.body;
+      if ([!text, !from, !channelId].includes(true)) { return res.status(400).json({ error: "Bad Request" }); }
       if (_id) {
         const message = await MessageModal.findOneAndUpdate(
           { _id },
@@ -41,7 +42,7 @@ const messageController = {
           },
           {
             new: true,
-          }
+          },
         );
         return res.status(200).json(message);
       }

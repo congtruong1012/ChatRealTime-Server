@@ -18,8 +18,7 @@ const channelController = {
   create: async (req, res) => {
     try {
       const { senderId, receiverId } = req.body;
-      if ([!senderId, !receiverId].includes(true))
-        return res.status(400).json({ error: "Bad Request" });
+      if ([!senderId, !receiverId].includes(true)) { return res.status(400).json({ error: "Bad Request" }); }
       const channel = new ChannelModel({
         members: [senderId, receiverId],
       });

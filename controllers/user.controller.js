@@ -1,6 +1,6 @@
-const UserModel = require("../models/user.model");
-const refreshTokenModel = require("../models/refresh-token.model");
 const jwt = require("jsonwebtoken");
+const UserModel = require("../models/user.model");
+const RefreshTokenModel = require("../models/refresh-token.model");
 // const { createToken } = require("../utils/token");
 
 const userController = {
@@ -15,8 +15,9 @@ const userController = {
   detail: async (req, res) => {
     try {
       const { userId } = req.query;
-       if ([!userId].includes(true))
-         return res.status(400).json({ error: "Bad Request" });
+      if ([!userId].includes(true)) {
+        return res.status(400).json({ error: "Bad Request" });
+      }
       const data = await UserModel.findOne({ _id: userId });
       return res.status(200).json(data);
     } catch (error) {
@@ -33,7 +34,12 @@ const userController = {
         const userLogin = await UserModel.findOne({ _id });
         if (userLogin) {
           const { username, fullname, avatar } = userLogin;
-          return res.status(200).json({ _id, username, fullname, avatar });
+          return res.status(200).json({
+            _id,
+            username,
+            fullname,
+            avatar,
+          });
         }
         return res.status(401).json({ error: "Authorization" });
       });
@@ -45,12 +51,14 @@ const userController = {
     try {
       const { username, password, fullname } = req.body;
       /** Check required */
-      if ([!username, !password, !fullname].includes(true))
+      if ([!username, !password, !fullname].includes(true)) {
         return res.status(400).json({ error: "Bad Request" });
+      }
       /** Check user exist */
       const userExist = await UserModel.findOne({ username });
-      if (userExist)
+      if (userExist) {
         return res.status(204).json({ error: "Username is exist" });
+      }
 
       const users = await UserModel.find({});
       const user = new UserModel({
@@ -65,15 +73,19 @@ const userController = {
       const refreshToken = jwt.sign({ _id }, process.env.REFRESH_TOKEN, {
         expiresIn: "24h",
       });
-      const newRfToken = new refreshTokenModel({ token: newRfToken });
+      const newRfToken = new RefreshTokenModel({ token: refreshToken });
       await newRfToken.save();
       res.cookie("token", token, {
         maxAge: 12 * 60 * 60 * 1000,
         httpOnly: true,
       });
-      return res
-        .status(200)
-        .json({ refreshToken, _id, username, fullname, avatar });
+      return res.status(200).json({
+        refreshToken,
+        _id,
+        username,
+        fullname,
+        avatar,
+      });
     } catch (error) {
       return res.status(500).json(error);
     }
@@ -83,13 +95,14 @@ const userController = {
     try {
       const { username, password } = req.body;
       /** Check required */
-      if ([!username, !password].includes(true))
+      if ([!username, !password].includes(true)) {
         return res.status(400).json({ error: "Bad Request" });
+      }
       /** Check login */
       const userExist = await UserModel.findOne({ username });
       if (userExist) {
         if (userExist.password === password) {
-          const { username, fullname, avatar, _id } = userExist;
+          const { fullname, avatar, _id } = userExist;
           // const token = createToken(_id)
           const token = jwt.sign({ _id }, process.env.TOKEN, {
             expiresIn: "12h",
@@ -97,15 +110,19 @@ const userController = {
           const refreshToken = jwt.sign({ _id }, process.env.REFRESH_TOKEN, {
             expiresIn: "24h",
           });
-          // const newRfToken = new refreshTokenModel({ token: newRfToken });
+          // const newRfToken = new RefreshTokenModel({ token: newRfToken });
           // const payload = newRfToken.save();
           res.cookie("token", token, {
             maxAge: 12 * 60 * 60 * 1000,
             httpOnly: true,
           });
-          return res
-            .status(200)
-            .json({ refreshToken, _id, username, fullname, avatar });
+          return res.status(200).json({
+            refreshToken,
+            _id,
+            username,
+            fullname,
+            avatar,
+          });
         }
       }
       return res.status(401).json({ error: "Authorization" });
@@ -122,7 +139,7 @@ const userController = {
     const { refreshToken } = req.body;
     try {
       if (!refreshToken) return res.status(400).json({ error: "Bad Request" });
-      const { token } = await refreshTokenModel.findOne({
+      const { token } = await RefreshTokenModel.findOne({
         token: refreshToken,
       });
       jwt.verify(token, process.env.TOKEN, (err, user) => {
@@ -135,7 +152,9 @@ const userController = {
         return res.status(200).json({ token: newToken });
       });
       return res.send(token);
-    } catch (error) {}
+    } catch (error) {
+      return res.status(500).json({ error });
+    }
   },
 };
 

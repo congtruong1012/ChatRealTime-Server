@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const refreshTokenSchema = mongoose.Schema(
   {
     token: {
@@ -6,7 +7,7 @@ const refreshTokenSchema = mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("refresh-token", refreshTokenSchema);

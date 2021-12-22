@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
 });
 
 app.use("/api", userRoute);
-app.use("/api/message",  messageRoute);
+app.use("/api/message", messageRoute);
 app.use("/api/channel", checkToken, channelRoute);
 
 const port = process.env.PORT || 4000;

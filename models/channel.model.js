@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const channelSchema = mongoose.Schema(
   {
     members: {
@@ -6,7 +7,7 @@ const channelSchema = mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Channel", channelSchema);

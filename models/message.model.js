@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const messageSchema = mongoose.Schema(
   {
     text: {
@@ -18,7 +19,7 @@ const messageSchema = mongoose.Schema(
       ref: "Channel",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Message", messageSchema);

@@ -1,6 +1,7 @@
 const express = require("express");
 const checkToken = require("../middlewares/check-token");
 const userController = require("../controllers/user.controller");
+
 const router = express.Router();
 
 router.get("/users", checkToken, userController.get);
