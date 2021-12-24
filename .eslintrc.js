@@ -12,5 +12,6 @@ module.exports = {
     quotes: ["error", "double"],
     "consistent-return": 0,
     "no-underscore-dangle": 0,
+    "nonblock-statement-body-position": "below",
   },
 };
