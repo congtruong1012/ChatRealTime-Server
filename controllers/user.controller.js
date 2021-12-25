@@ -6,7 +6,10 @@ const RefreshTokenModel = require("../models/refresh-token.model");
 const userController = {
   get: async (req, res) => {
     try {
-      const data = await UserModel.find({});
+      const { name } = req.query
+      const data = await UserModel.find({
+        fullname: { $regex: `.*${name}.*`, $options: "i" },
+      });
       return res.status(200).json(data);
     } catch (error) {
       return res.status(500).json(error);
