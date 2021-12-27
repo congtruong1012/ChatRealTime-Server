@@ -6,10 +6,11 @@ const RefreshTokenModel = require("../models/refresh-token.model");
 const userController = {
   get: async (req, res) => {
     try {
-      const { name } = req.query
+      const { name } = req.query;
       const data = await UserModel.find({
         fullname: { $regex: `.*${name}.*`, $options: "i" },
-      });
+        _id: { $ne: req._id },
+      }).select("-password");
       return res.status(200).json(data);
     } catch (error) {
       return res.status(500).json(error);
@@ -21,7 +22,7 @@ const userController = {
       if ([!userId].includes(true)) {
         return res.status(400).json({ error: "Bad Request" });
       }
-      const data = await UserModel.findOne({ _id: userId });
+      const data = await UserModel.findOne({ _id: userId }).select("-password");
       return res.status(200).json(data);
     } catch (error) {
       return res.status(500).json(error);
