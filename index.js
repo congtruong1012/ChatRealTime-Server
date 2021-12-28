@@ -38,9 +38,25 @@ app.use(bodyParser());
 
 app.use(cookieParser());
 
+let users = [];
+
 io.on("connection", (socket) => {
+  socket.on("add-user", (userId) => {
+    if (!users.some((user) => user.userId === userId))
+      users.push({ userId, socketId: socket?.id });
+    console.log("socket.on ~ users", users);
+    io.emit("get-users", users);
+  });
+
   socket.on("send-message", (data) => {
-    socket.emit("receive-message", data);
+    const dataMessage = { ...data, time: Date.now() };
+    socket.emit("receive-message", dataMessage);
+  });
+
+  socket.on("disconnect", () => {
+    users = users.filter((user) => user.socketId !== socket?.id);
+    console.log("socket.off ~ users", users);
+    io.emit("get-users", users);
   });
 });
 

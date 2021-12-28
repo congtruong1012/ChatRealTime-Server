@@ -13,17 +13,19 @@ const messageController = {
       });
       if (channel?._id) {
         const messages = await MessageModel.find({ channelId: channel._id });
-        return res.status(200).json(messages);
+        return res.status(200).json({
+          channel,
+          data: messages,
+        });
       } else {
-        console.log("get: ~ channelId", channel);
         const newChannel = new ChannelModel({
           members: [userId, req._id],
         });
         const payload = await newChannel.save();
-        return res.status(201).json(payload);
+        return res.status(201).json({ channel: payload, data: [] });
       }
     } catch (error) {
-      console.log('get: ~ error', error)
+      console.log("get: ~ error", error);
       return res.status(500).json(error);
     }
   },
@@ -53,6 +55,7 @@ const messageController = {
           { _id },
           {
             text,
+            time: Date.now(),
           },
           {
             new: true,
@@ -62,6 +65,7 @@ const messageController = {
       }
       const message = new MessageModel({
         text,
+        time: Date.now(),
         from,
         channelId,
       });
