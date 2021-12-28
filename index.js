@@ -50,12 +50,15 @@ io.on("connection", (socket) => {
 
   socket.on("send-message", (data) => {
     const dataMessage = { ...data, time: Date.now() };
-    socket.emit("receive-message", dataMessage);
+    const { to } = dataMessage;
+    const user = users.find((item) => item.userId === to);
+    if (user) {
+      io.to(user?.socketId).emit("receive-message", dataMessage);
+    }
   });
 
   socket.on("disconnect", () => {
     users = users.filter((user) => user.socketId !== socket?.id);
-    console.log("socket.off ~ users", users);
     io.emit("get-users", users);
   });
 });
